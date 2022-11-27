@@ -32,6 +32,7 @@
         <lombok.version>1.18.24</lombok.version>
         <junit.version>5.9.1</junit.version>
         <cli.version>1.5.0</cli.version>
+        <faker.version>1.0.2</faker.version>
     </properties>
 
     <dependencies>
@@ -51,6 +52,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-reload4j</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>${faker.version}</version>
         </dependency>
 
         <dependency>
