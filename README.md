@@ -1,6 +1,8 @@
 # KafkaToy
 Simple Java code to demonstrate working with Kafka
 
+![Java CI with Maven](https://github.com/TheBellman/KafkaToy/workflows/Java%20CI%20with%20Maven/badge.svg?branch=master)
+
 ## Prerequisites
 This project assumes that:
 
