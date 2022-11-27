@@ -33,6 +33,7 @@
         <junit.version>5.9.1</junit.version>
         <cli.version>1.5.0</cli.version>
         <faker.version>1.0.2</faker.version>
+        <kafka.client.version>3.3.1</kafka.client.version>
     </properties>
 
     <dependencies>
@@ -58,6 +59,12 @@
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
             <version>${faker.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>${kafka.client.version}</version>
         </dependency>
 
         <dependency>

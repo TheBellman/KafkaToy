@@ -28,4 +28,9 @@ class ProducerTest {
     void testGetDataStream() {
         assertNotNull(instance.getDataStream());
     }
+
+    @Test
+    void testMakeProducer() {
+        assertNotNull(instance.makeProducer());
+    }
 }
