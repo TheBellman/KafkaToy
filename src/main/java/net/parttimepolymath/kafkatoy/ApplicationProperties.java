@@ -37,4 +37,13 @@ public final class ApplicationProperties {
     public static String getBuildDate() {
         return PROPERTIES.getProperty("application.build.date", "");
     }
+
+    /**
+     * get the default topic name
+     *
+     * @return a non-null but possibly empty string.
+     */
+    public static String getDefaultTopic() {
+        return PROPERTIES.getProperty("default.topic", "");
+    }
 }

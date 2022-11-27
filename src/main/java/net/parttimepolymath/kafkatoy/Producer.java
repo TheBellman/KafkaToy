@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.util.Properties;
 import java.util.function.Supplier;
@@ -18,6 +19,7 @@ import java.util.stream.Stream;
 public class Producer implements Runnable {
     private boolean debugMode = false;
     private int messageCount;
+    private String topic;
     private static final Faker faker = new Faker();
 
     @Override
@@ -25,10 +27,19 @@ public class Producer implements Runnable {
         log.info("starting with messageCount = {}", messageCount);
 // note have to close() producer
         Stream<String> nameStream = getDataStream();
-        if (messageCount>0) {
-            nameStream.limit(messageCount).forEach(System.out::println);
-        } else {
-            nameStream.forEach(System.out::println);
+        try (KafkaProducer<String, String> producer = makeProducer()) {
+            if (messageCount > 0) {
+                nameStream.limit(messageCount)
+                        .map(name -> new ProducerRecord<String, String>(topic, name))
+                        .forEach(producer::send);
+            } else {
+                nameStream
+                        .map(name -> new ProducerRecord<String, String>(topic, name))
+                        .forEach(producer::send);
+            }
+        } catch (Exception ex) {
+            log.error("Sending to Kafka failed", ex);
+
         }
         log.info("ending");
     }

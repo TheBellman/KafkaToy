@@ -24,6 +24,7 @@ public class Main {
                 if (line.hasOption("p")) {
                     Producer instance = Producer.builder()
                             .messageCount(messages(line))
+                            .topic(line.hasOption("t") ? line.getOptionValue("t") : ApplicationProperties.getDefaultTopic())
                             .debugMode(line.hasOption('d'))
                             .build();
                     instance.run();
@@ -45,6 +46,7 @@ public class Main {
         Options options = new Options();
         options.addOption(Option.builder("d").longOpt("debug").desc("enable debug mode").build());
         options.addOption(Option.builder("p").longOpt("producer").desc("run as a data producer").build());
+        options.addOption(Option.builder("t").longOpt("topic").desc("topic name used").build());
         options.addOption(Option.builder("n").longOpt("count").desc("number of messages to produce").hasArg().numberOfArgs(1).argName("count").build());
         options.addOption((Option.builder("?").longOpt("help").desc("print this help message").build()));
 
