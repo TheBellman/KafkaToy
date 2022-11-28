@@ -11,17 +11,14 @@ class ProducerTest {
     // note this will verify that the builder will in fact work
     @BeforeEach
     void setUp() {
-        instance = Producer.builder().debugMode(false).messageCount(20).build();
+        instance = Producer.builder().messageCount(20).build();
     }
 
     // tests variations on the builder
     @Test
     void build() {
         assertAll("build", () -> assertNotNull(Producer.builder().build()),
-                () -> assertNotNull(Producer.builder().debugMode(true).build()),
-                () -> assertNotNull(Producer.builder().debugMode(false).build()),
-                () -> assertNotNull(Producer.builder().messageCount(20).build()),
-                () -> assertNotNull(Producer.builder().debugMode(true).messageCount(20).build()));
+                () -> assertNotNull(Producer.builder().messageCount(20).build()));
     }
 
     @Test

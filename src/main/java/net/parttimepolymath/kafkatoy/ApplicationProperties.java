@@ -56,6 +56,14 @@ public final class ApplicationProperties {
     }
 
     /**
+     * get the consumer group id.
+     *
+     * @return a non-null but possibly empty string.
+     */
+    public static String getGroupId() {
+        return PROPERTIES.getProperty("kafka.group.id", "");
+    }
+    /**
      * get the bootstrap server:port for connecting to Kafka
      *
      * @return a non-null but possibly empty string.

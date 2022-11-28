@@ -16,7 +16,7 @@ public final class ProducerFactory {
      *
      * @return a non null KafkaProducer
      */
-    static KafkaProducer<String, String> make(final String bootstrap) {
+    static <K, V> KafkaProducer<K, V> make(final String bootstrap) {
         Properties kafkaProperties = new Properties();
         kafkaProperties.put("bootstrap.servers", bootstrap);
         kafkaProperties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
@@ -24,7 +24,7 @@ public final class ProducerFactory {
         kafkaProperties.put("client.id", ApplicationProperties.getProducerId());
         kafkaProperties.put("compression.type", "snappy");
         kafkaProperties.put("enable.idempotence", "true");
-        KafkaProducer<String, String> result =  new KafkaProducer<>(kafkaProperties);
+        KafkaProducer<K, V> result =  new KafkaProducer<>(kafkaProperties);
         addShutdown(ApplicationProperties.getProducerId(), result);
         return result;
     }

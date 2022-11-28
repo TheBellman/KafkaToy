@@ -19,13 +19,12 @@ import java.util.stream.Stream;
  */
 @Builder
 @Slf4j
-public class Producer implements Runnable {
+public class Producer<K, V> implements Runnable {
     private int messageCount;
     private String topic;
     private String bootstrap;
     private static final Faker faker = new Faker();
 
-    // TODO: loop forever should trap for interrupt to make sure close happens
     @Override
     public void run() {
         log.info("starting with messageCount = {}", messageCount);
@@ -37,22 +36,21 @@ public class Producer implements Runnable {
          */
         // TODO move the counter into a wrapper around the producer so it's available during shutdown
         AtomicLong totalSent = new AtomicLong(0);
-        try (Stream<String> nameStream = getDataStream(); KafkaProducer<String, String> producer = ProducerFactory.make(bootstrap)) {
+        try (Stream<String> nameStream = getDataStream(); KafkaProducer<K, V> producer = ProducerFactory.make(bootstrap)) {
             if (messageCount > 0) {
-                nameStream.limit(messageCount).map(name -> new ProducerRecord<>(topic, UUID.randomUUID().toString(),
-                        name)).forEach(msg -> {
+                nameStream.limit(messageCount).map(name -> new ProducerRecord<K, V>(topic, (K) UUID.randomUUID().toString(),
+                        (V) name)).forEach(msg -> {
                     producer.send(msg, new CallbackLogger());
                     totalSent.incrementAndGet();
                 });
             } else {
-                nameStream.map(name -> new ProducerRecord<>(topic, UUID.randomUUID().toString(), name)).forEach(msg -> {
+                nameStream.map(name -> new ProducerRecord<K, V>(topic, (K)UUID.randomUUID().toString(), (V)name)).forEach(msg -> {
                     producer.send(msg, new CallbackLogger());
                     totalSent.incrementAndGet();
                 });
             }
         } catch (Exception ex) {
             log.error("Sending to Kafka failed", ex);
-
         }
         log.info("ending - sent {} messages", totalSent.get());
     }

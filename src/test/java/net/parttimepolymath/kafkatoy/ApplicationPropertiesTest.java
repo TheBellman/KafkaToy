@@ -12,7 +12,8 @@ class ApplicationPropertiesTest {
                 () -> assertNotNull(ApplicationProperties.getAppVersion()),
                 () -> assertNotNull(ApplicationProperties.getBuildDate()),
                 () -> assertNotNull(ApplicationProperties.getDefaultTopic()),
-                () -> assertNotNull(ApplicationProperties.getBootstrap())
+                () -> assertNotNull(ApplicationProperties.getBootstrap()),
+                () -> assertNotNull(ApplicationProperties.getGroupId())
         );
     }
 }
