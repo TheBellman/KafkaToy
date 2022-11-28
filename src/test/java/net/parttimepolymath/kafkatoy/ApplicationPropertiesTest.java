@@ -6,17 +6,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ApplicationPropertiesTest {
     @Test
-    void getAppName() {
-        assertNotNull(ApplicationProperties.getAppName());
-    }
-
-    @Test
-    void getAppVersion() {
-        assertNotNull(ApplicationProperties.getAppVersion());
-    }
-
-    @Test
-    void getBuildDate() {
-        assertNotNull(ApplicationProperties.getBuildDate());
+    void getValues() {
+        assertAll(() -> assertNotNull(ApplicationProperties.getProducerId()),
+                () -> assertNotNull(ApplicationProperties.getAppName()),
+                () -> assertNotNull(ApplicationProperties.getAppVersion()),
+                () -> assertNotNull(ApplicationProperties.getBuildDate()),
+                () -> assertNotNull(ApplicationProperties.getDefaultTopic()),
+                () -> assertNotNull(ApplicationProperties.getBootstrap())
+        );
     }
 }

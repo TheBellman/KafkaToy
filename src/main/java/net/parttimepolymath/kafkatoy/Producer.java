@@ -9,6 +9,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -23,6 +24,7 @@ public class Producer implements Runnable {
     private boolean debugMode;
     private int messageCount;
     private String topic;
+    private String bootstrap;
     private static final Faker faker = new Faker();
 
     // TODO: loop forever should trap for interrupt to make sure close happens
@@ -38,12 +40,13 @@ public class Producer implements Runnable {
         AtomicLong totalSent = new AtomicLong(0);
         try (Stream<String> nameStream = getDataStream(); KafkaProducer<String, String> producer = makeProducer()) {
             if (messageCount > 0) {
-                nameStream.limit(messageCount).map(name -> new ProducerRecord<String, String>(topic, name)).forEach(msg -> {
+                nameStream.limit(messageCount).map(name -> new ProducerRecord<>(topic, UUID.randomUUID().toString(),
+                        name)).forEach(msg -> {
                     producer.send(msg, new CallbackLogger());
                     totalSent.incrementAndGet();
                 });
             } else {
-                nameStream.map(name -> new ProducerRecord<String, String>(topic, name)).forEach(msg -> {
+                nameStream.map(name -> new ProducerRecord<>(topic, UUID.randomUUID().toString(), name)).forEach(msg -> {
                     producer.send(msg, new CallbackLogger());
                     totalSent.incrementAndGet();
                 });
@@ -74,9 +77,12 @@ public class Producer implements Runnable {
      */
     KafkaProducer<String, String> makeProducer() {
         Properties kafkaProperties = new Properties();
-        kafkaProperties.put("bootstrap.servers", "localhost:9092");
+        kafkaProperties.put("bootstrap.servers", bootstrap);
         kafkaProperties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         kafkaProperties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        kafkaProperties.put("client.id", ApplicationProperties.getProducerId());
+        kafkaProperties.put("compression.type", "snappy");
+        kafkaProperties.put("enable.idempotence", "true");
         return new KafkaProducer<>(kafkaProperties);
     }
 
@@ -84,7 +90,7 @@ public class Producer implements Runnable {
      * Simple Callback that just logs any errors. A more sophisticated solution could be used to
      * manage production rate, perhaps pausing for a period of time.
      */
-    private  class CallbackLogger implements Callback {
+    private static class CallbackLogger implements Callback {
         @Override
         public void onCompletion(RecordMetadata recordMetadata, Exception e) {
             if (e != null) {
