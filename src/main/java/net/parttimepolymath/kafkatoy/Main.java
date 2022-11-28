@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 
 @Slf4j
@@ -27,14 +29,14 @@ public class Main {
                 help(options);
             } else {
                 if (line.hasOption(OPT_PRODUCER)) {
-                    Producer instance = Producer.builder()
+                    Producer<String, String> instance = Producer.<String, String>builder()
                             .messageCount(messages(line))
                             .topic(findTopic(line))
                             .bootstrap(findBootstrap(line))
                             .build();
                     instance.run();
                 } else if (line.hasOption(OPT_CONSUMER)) {
-                    Consumer instance = Consumer.builder()
+                    Consumer<String, String> instance = Consumer.<String, String>builder()
                             .topic(findTopic(line))
                             .bootstrap(findBootstrap(line))
                             .build();
@@ -54,7 +56,7 @@ public class Main {
      * @return a non-null string
      * @throws ParseException if the discovered string is not like "host:port"
      */
-    private static String findBootstrap(final CommandLine line) throws ParseException {
+    private static String findBootstrap(final @NotNull CommandLine line) throws ParseException {
         if (line.hasOption(OPT_BOOTSTRAP)) {
             return validateBootstrap(line.getOptionValue(OPT_BOOTSTRAP));
         } else {
@@ -67,7 +69,7 @@ public class Main {
      * @param line the command line to examine.
      * @return a non null string
      */
-    private static String findTopic(final CommandLine line) {
+    private static String findTopic(final @NotNull CommandLine line) {
         if (line.hasOption(OPT_TOPIC)) {
             return line.getOptionValue(OPT_TOPIC);
         } else {
@@ -83,7 +85,8 @@ public class Main {
      * @return the provided string if it is good
      * @throws ParseException if the provided bootstrap is malformed.
      */
-    static String validateBootstrap(final String bootstrap) throws ParseException {
+    @Contract("_ -> param1")
+    static @NotNull String validateBootstrap(final @NotNull String bootstrap) throws ParseException {
         String[] parts = bootstrap.split(":");
         if (parts.length != 2 || !NumberUtils.isDigits(parts[1])) {
             throw new ParseException("expected the bootstrap to be host:port");
@@ -96,7 +99,7 @@ public class Main {
      *
      * @return a non-null set of options.
      */
-    private static Options options() {
+    private static @NotNull Options options() {
         Options options = new Options();
         options.addOption(Option.builder(OPT_PRODUCER).longOpt("producer").desc("run as a data producer").build());
         options.addOption(Option.builder(OPT_CONSUMER).longOpt("consumer").desc("run as a data consumer").build());
@@ -126,7 +129,7 @@ public class Main {
      * @param line the non-null command line to examine
      * @return the number of messages specified, or the 0 if none.
      */
-    private static int messages(final CommandLine line) {
+    private static int messages(final @NotNull CommandLine line) {
         if (line.hasOption('n') && NumberUtils.isParsable(line.getOptionValue(OPT_COUNT))) {
             return NumberUtils.toInt(StringUtils.strip(line.getOptionValue(OPT_COUNT)));
         } else {
