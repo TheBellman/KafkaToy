@@ -13,6 +13,10 @@
         <priority value="WARN" />
     </category>
 
+    <category name="org.apache.kafka.common.metrics">
+        <priority value="WARN" />
+    </category>
+
     <root>
         <priority value="INFO" />
         <appender-ref ref="console" />
