@@ -20,7 +20,6 @@ import java.util.stream.Stream;
 @Builder
 @Slf4j
 public class Producer implements Runnable {
-    private boolean debugMode;
     private int messageCount;
     private String topic;
     private String bootstrap;

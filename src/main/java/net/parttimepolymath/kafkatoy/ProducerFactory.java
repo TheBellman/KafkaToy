@@ -34,7 +34,7 @@ public final class ProducerFactory {
      * @param clientId the id of the producer, used for reporting.
      * @param producer the producer to close down.
      */
-    private static void addShutdown(final String clientId, final KafkaProducer<String, String> producer) {
+    private static <K, V> void addShutdown(final String clientId, final KafkaProducer<K, V> producer) {
         Runtime.getRuntime().addShutdownHook(new ProducerShutdownHook<>(clientId, producer));
     }
 }

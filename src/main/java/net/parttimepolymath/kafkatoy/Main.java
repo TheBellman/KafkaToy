@@ -22,7 +22,6 @@ public class Main {
                             .messageCount(messages(line))
                             .topic(line.hasOption("t") ? line.getOptionValue("t") : ApplicationProperties.getDefaultTopic())
                             .bootstrap(line.hasOption("b") ? validateBootstrap(line.getOptionValue("b")) : ApplicationProperties.getBootstrap())
-                            .debugMode(line.hasOption('d'))
                             .build();
                     instance.run();
                 } else {
@@ -55,7 +54,6 @@ public class Main {
      */
     private static Options options() {
         Options options = new Options();
-        options.addOption(Option.builder("d").longOpt("debug").desc("enable debug mode").build());
         options.addOption(Option.builder("p").longOpt("producer").desc("run as a data producer").build());
         options.addOption(Option.builder("t").longOpt("topic").desc("topic name used").build());
         options.addOption(Option.builder("n").longOpt("count").desc("number of messages to produce").hasArg().argName("count").build());
