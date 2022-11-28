@@ -8,7 +8,6 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
@@ -37,8 +36,9 @@ public class Producer implements Runnable {
          * because we don't get a chance to manage how long the producer will wait to tidy itself off, and
          * it will wait Long.MAX_VALUE milliseconds to finish tidying up before giving up.
          */
+        // TODO move the counter into a wrapper around the producer so it's available during shutdown
         AtomicLong totalSent = new AtomicLong(0);
-        try (Stream<String> nameStream = getDataStream(); KafkaProducer<String, String> producer = makeProducer()) {
+        try (Stream<String> nameStream = getDataStream(); KafkaProducer<String, String> producer = ProducerFactory.make(bootstrap)) {
             if (messageCount > 0) {
                 nameStream.limit(messageCount).map(name -> new ProducerRecord<>(topic, UUID.randomUUID().toString(),
                         name)).forEach(msg -> {
@@ -67,23 +67,6 @@ public class Producer implements Runnable {
         // these two lines could be combined, but I like the reminder of what is going on.
         Supplier<String> nameSupplier = () -> faker.name().fullName();
         return Stream.generate(nameSupplier);
-    }
-
-    /**
-     * create the producer that will be used to write our data stream.
-     * This is package private to support testing.
-     *
-     * @return a non null KafkaProducer
-     */
-    KafkaProducer<String, String> makeProducer() {
-        Properties kafkaProperties = new Properties();
-        kafkaProperties.put("bootstrap.servers", bootstrap);
-        kafkaProperties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        kafkaProperties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        kafkaProperties.put("client.id", ApplicationProperties.getProducerId());
-        kafkaProperties.put("compression.type", "snappy");
-        kafkaProperties.put("enable.idempotence", "true");
-        return new KafkaProducer<>(kafkaProperties);
     }
 
     /**

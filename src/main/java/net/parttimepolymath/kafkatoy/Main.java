@@ -51,8 +51,6 @@ public class Main {
 
     /**
      * construct the set of options for the command line.
-     * TODO: inject broker(s)
-     *
      * @return a non-null set of options.
      */
     private static Options options() {
