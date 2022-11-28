@@ -37,4 +37,30 @@ public final class ApplicationProperties {
     public static String getBuildDate() {
         return PROPERTIES.getProperty("application.build.date", "");
     }
+
+    /**
+     * get a client.id for the producer.
+     * @return a non-null and non-empty string
+     */
+    public static String getProducerId() {
+        return PROPERTIES.getProperty("kafka.producer.id", "Producer");
+    }
+
+    /**
+     * get the default topic name
+     *
+     * @return a non-null but possibly empty string.
+     */
+    public static String getDefaultTopic() {
+        return PROPERTIES.getProperty("default.topic", "");
+    }
+
+    /**
+     * get the bootstrap server:port for connecting to Kafka
+     *
+     * @return a non-null but possibly empty string.
+     */
+    public static String getBootstrap() {
+        return PROPERTIES.getProperty("kafka.boostrap", "localhost:9092");
+    }
 }

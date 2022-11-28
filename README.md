@@ -33,12 +33,21 @@ all being well, after a few seconds or minutes you should see something like:
 [INFO] ------------------------------------------------------------------------
 ```
 ## Usage
-In it's current form, this does nothing but say hello:
+Without specifying anything else, the toy will report it's usage.
 
 ```
-% java -jar target/KafkaToy-1.0-SNAPSHOT-shaded.jar 
-Hello world from KafkaToy, version 1.0-SNAPSHOT (2022-11-27T15:40:17Z)
+% java -jar target/KafkaToy-1.0-SNAPSHOT-shaded.jar   
+KafkaToy (1.0-SNAPSHOT)
+usage: KafkaToy
+ -?,--help            print this help message
+ -d,--debug           enable debug mode
+ -n,--count <count>   number of messages to produce
+ -p,--producer        run as a data producer
 ```
+
+Specifying `-p` will cause the tool to start emitting a data stream. If you also specify `-n` it will stop after that many messages are emitted, otherwise it will run until you hard stop it.
+
+
 
 ## License
 
