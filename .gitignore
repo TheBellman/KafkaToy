@@ -27,3 +27,4 @@ hs_err_pid*
 **/*.key
 **/.idea/*
 **/target/*
+/src/main/java/net/parttimepolymath/kafkatoy/avro/

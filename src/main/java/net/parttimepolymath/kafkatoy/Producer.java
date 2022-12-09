@@ -38,13 +38,12 @@ public class Producer<K, V> implements Runnable {
         AtomicLong totalSent = new AtomicLong(0);
         try (Stream<String> nameStream = getDataStream(); KafkaProducer<K, V> producer = ProducerFactory.make(bootstrap)) {
             if (messageCount > 0) {
-                nameStream.limit(messageCount).map(name -> new ProducerRecord<K, V>(topic, (K) UUID.randomUUID().toString(),
-                        (V) name)).forEach(msg -> {
+                nameStream.limit(messageCount).map(name -> new ProducerRecord<K, V>(topic, (K) UUID.randomUUID().toString(), (V) name)).forEach(msg -> {
                     producer.send(msg, new CallbackLogger());
                     totalSent.incrementAndGet();
                 });
             } else {
-                nameStream.map(name -> new ProducerRecord<K, V>(topic, (K)UUID.randomUUID().toString(), (V)name)).forEach(msg -> {
+                nameStream.map(name -> new ProducerRecord<K, V>(topic, (K) UUID.randomUUID().toString(), (V)name)).forEach(msg -> {
                     producer.send(msg, new CallbackLogger());
                     totalSent.incrementAndGet();
                 });
