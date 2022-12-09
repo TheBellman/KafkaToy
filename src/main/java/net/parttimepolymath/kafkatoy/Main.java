@@ -39,7 +39,7 @@ public class Main {
                             .build();
                     instance.run();
                 } else if (line.hasOption(OPT_CONSUMER)) {
-                    Consumer<String, String> instance = Consumer.<String, String>builder()
+                    Consumer<String, Customer> instance = Consumer.<String, Customer>builder()
                             .topic(findTopic(line))
                             .bootstrap(findBootstrap(line))
                             .build();

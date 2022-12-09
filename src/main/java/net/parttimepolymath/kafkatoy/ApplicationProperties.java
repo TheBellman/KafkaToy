@@ -71,4 +71,8 @@ public final class ApplicationProperties {
     public static String getBootstrap() {
         return PROPERTIES.getProperty("kafka.boostrap", "localhost:9092");
     }
+
+    public static String getSchemaRegistryUrl() {
+        return PROPERTIES.getProperty("schema.registry.url", "http://localhost:8081");
+    }
 }

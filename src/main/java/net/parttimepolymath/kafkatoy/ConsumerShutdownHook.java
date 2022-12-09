@@ -10,15 +10,18 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 public class ConsumerShutdownHook<K, V> extends Thread {
     private final KafkaConsumer<K, V> service;
     private final String id;
-
+    private final Thread mainThread;
     /**
      * primary constructor
-     * @param groupId the group id of the consumer, used for reporting
+     *
+     * @param groupId  the group id of the consumer, used for reporting
      * @param consumer the consumer that will be shutdown.
+     * @param mainThread reference to main thread so we can rejoin it
      */
-    public ConsumerShutdownHook(final String groupId, final KafkaConsumer<K,V> consumer) {
+    public ConsumerShutdownHook(final String groupId, final KafkaConsumer<K, V> consumer, final Thread mainThread) {
         this.service = consumer;
         this.id = groupId;
+        this.mainThread = mainThread;
     }
 
     @Override
@@ -26,10 +29,11 @@ public class ConsumerShutdownHook<K, V> extends Thread {
         if (service != null) {
             log.info("Shutting down consumer for group {}", id);
             // catch the exception that may occur as the client complains about thread safety
+            service.wakeup();
             try {
-                service.close();
-            } catch (Exception ex) {
-                log.debug("Exception while closing", ex);
+                mainThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
