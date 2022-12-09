@@ -8,6 +8,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
+import java.security.Key;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
@@ -24,6 +25,7 @@ public class Producer<K, V> implements Runnable {
     private String topic;
     private String bootstrap;
     private static final Faker faker = new Faker();
+    private KeyGenerator<K> keyGenerator;
 
     @Override
     public void run() {
@@ -36,14 +38,16 @@ public class Producer<K, V> implements Runnable {
          */
         // TODO move the counter into a wrapper around the producer so it's available during shutdown
         AtomicLong totalSent = new AtomicLong(0);
-        try (Stream<String> nameStream = getDataStream(); KafkaProducer<K, V> producer = ProducerFactory.make(bootstrap)) {
+        try (Stream<String> nameStream = getDataStream(); KafkaProducer<K, V> producer =
+                ProducerFactory.make(bootstrap)) {
             if (messageCount > 0) {
-                nameStream.limit(messageCount).map(name -> new ProducerRecord<K, V>(topic, (K) UUID.randomUUID().toString(), (V) name)).forEach(msg -> {
+                nameStream.limit(messageCount).map(name -> new ProducerRecord<K, V>(topic,
+                        keyGenerator.getKey(), (V) name)).forEach(msg -> {
                     producer.send(msg, new CallbackLogger());
                     totalSent.incrementAndGet();
                 });
             } else {
-                nameStream.map(name -> new ProducerRecord<K, V>(topic, (K) UUID.randomUUID().toString(), (V)name)).forEach(msg -> {
+                nameStream.map(name -> new ProducerRecord<K, V>(topic, keyGenerator.getKey(), (V) name)).forEach(msg -> {
                     producer.send(msg, new CallbackLogger());
                     totalSent.incrementAndGet();
                 });

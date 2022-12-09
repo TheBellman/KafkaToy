@@ -32,6 +32,7 @@ public class Main {
                     Producer<String, String> instance = Producer.<String, String>builder()
                             .messageCount(messages(line))
                             .topic(findTopic(line))
+                            .keyGenerator(new UUIDKeyGenerator())
                             .bootstrap(findBootstrap(line))
                             .build();
                     instance.run();
