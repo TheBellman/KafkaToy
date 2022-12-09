@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class StringStreamProviderTest {
-    private final StringStreamProvider instance = new StringStreamProvider();
+class CustomerStreamProviderTest {
+    private final CustomerStreamProvider instance = new CustomerStreamProvider();
 
     @Test
     void testGetDataStream() {

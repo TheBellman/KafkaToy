@@ -1,6 +1,7 @@
 package net.parttimepolymath.kafkatoy;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 
 import java.util.Properties;
 
@@ -18,12 +19,15 @@ public final class KafkaProducerFactory {
      */
     static <K, V> KafkaProducer<K, V> make(final String bootstrap) {
         Properties kafkaProperties = new Properties();
-        kafkaProperties.put("bootstrap.servers", bootstrap);
-        kafkaProperties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        kafkaProperties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        kafkaProperties.put("client.id", ApplicationProperties.getProducerId());
-        kafkaProperties.put("compression.type", "snappy");
-        kafkaProperties.put("enable.idempotence", "true");
+        kafkaProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
+        kafkaProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+        kafkaProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "io.confluent.kafka.serializers.KafkaAvroSerializer");
+
+//        kafkaProperties.put("schema.registry.url", schemaUrl);
+
+        kafkaProperties.put(ProducerConfig.CLIENT_ID_CONFIG, ApplicationProperties.getProducerId());
+        kafkaProperties.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
+        kafkaProperties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
         KafkaProducer<K, V> result =  new KafkaProducer<>(kafkaProperties);
         addShutdown(ApplicationProperties.getProducerId(), result);
         return result;
