@@ -1,6 +1,7 @@
 package net.parttimepolymath.kafkatoy;
 
 import lombok.extern.slf4j.Slf4j;
+import net.parttimepolymath.kafkatoy.avro.Customer;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -29,14 +30,16 @@ public class Main {
                 help(options);
             } else {
                 if (line.hasOption(OPT_PRODUCER)) {
-                    Producer<String, String> instance = Producer.<String, String>builder()
+                    Producer<String, Customer> instance = Producer.<String, Customer>builder()
                             .messageCount(messages(line))
                             .topic(findTopic(line))
+                            .keyGenerator(new UUIDKeyGenerator())
+                            .dataStreamProvider(new CustomerStreamProvider())
                             .bootstrap(findBootstrap(line))
                             .build();
                     instance.run();
                 } else if (line.hasOption(OPT_CONSUMER)) {
-                    Consumer<String, String> instance = Consumer.<String, String>builder()
+                    Consumer<String, Customer> instance = Consumer.<String, Customer>builder()
                             .topic(findTopic(line))
                             .bootstrap(findBootstrap(line))
                             .build();

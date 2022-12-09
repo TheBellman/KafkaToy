@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ConsumerFactoryTest {
+class KafkaConsumerFactoryTest {
 
     @Test
     void make() {
-        assertNotNull(ConsumerFactory.make("consumer", "localhost:9091"));
+        assertNotNull(KafkaConsumerFactory.make("consumer", "localhost:9091"));
     }
 }

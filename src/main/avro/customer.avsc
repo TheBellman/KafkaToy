@@ -1,0 +1,8 @@
+{"namespace": "net.parttimepolymath.kafkatoy.avro",
+  "type": "record",
+  "name": "Customer",
+  "fields": [
+    {"name": "id", "type": "string"},
+    {"name": "name", "type": "string"}
+  ]
+}

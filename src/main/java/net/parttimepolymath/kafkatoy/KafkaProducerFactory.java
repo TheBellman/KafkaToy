@@ -1,6 +1,9 @@
 package net.parttimepolymath.kafkatoy;
 
+import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Properties;
 
@@ -9,7 +12,7 @@ import java.util.Properties;
  * Note that this also looks after setting a shutdown hook to try to close the
  * generated producer.
  */
-public final class ProducerFactory {
+public final class KafkaProducerFactory {
     /**
      * create the producer that will be used to write our data stream.
      * This is package private to support testing.
@@ -18,12 +21,13 @@ public final class ProducerFactory {
      */
     static <K, V> KafkaProducer<K, V> make(final String bootstrap) {
         Properties kafkaProperties = new Properties();
-        kafkaProperties.put("bootstrap.servers", bootstrap);
-        kafkaProperties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        kafkaProperties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        kafkaProperties.put("client.id", ApplicationProperties.getProducerId());
-        kafkaProperties.put("compression.type", "snappy");
-        kafkaProperties.put("enable.idempotence", "true");
+        kafkaProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
+        kafkaProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getTypeName());
+        kafkaProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class.getTypeName());
+        kafkaProperties.put("schema.registry.url", ApplicationProperties.getSchemaRegistryUrl());
+        kafkaProperties.put(ProducerConfig.CLIENT_ID_CONFIG, ApplicationProperties.getProducerId());
+        kafkaProperties.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
+        kafkaProperties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
         KafkaProducer<K, V> result =  new KafkaProducer<>(kafkaProperties);
         addShutdown(ApplicationProperties.getProducerId(), result);
         return result;

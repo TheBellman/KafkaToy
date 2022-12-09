@@ -8,6 +8,6 @@ class ProducerFactoryTest {
 
     @Test
     void testMakeProducer() {
-        assertNotNull(ProducerFactory.make("localhost:9091"));
+        assertNotNull(KafkaProducerFactory.make("localhost:9091"));
     }
 }
