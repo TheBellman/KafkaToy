@@ -9,7 +9,7 @@ import java.util.Properties;
  * Note that this also looks after setting a shutdown hook to try to close the
  * generated producer.
  */
-public final class ProducerFactory {
+public final class KafkaProducerFactory {
     /**
      * create the producer that will be used to write our data stream.
      * This is package private to support testing.

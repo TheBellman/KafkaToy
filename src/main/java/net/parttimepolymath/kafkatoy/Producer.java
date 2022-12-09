@@ -1,6 +1,5 @@
 package net.parttimepolymath.kafkatoy;
 
-import com.github.javafaker.Faker;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
@@ -8,10 +7,8 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-import java.security.Key;
-import java.util.UUID;
+
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
@@ -24,8 +21,9 @@ public class Producer<K, V> implements Runnable {
     private int messageCount;
     private String topic;
     private String bootstrap;
-    private static final Faker faker = new Faker();
+
     private KeyGenerator<K> keyGenerator;
+    private DataStreamProvider<V> dataStreamProvider;
 
     @Override
     public void run() {
@@ -38,16 +36,16 @@ public class Producer<K, V> implements Runnable {
          */
         // TODO move the counter into a wrapper around the producer so it's available during shutdown
         AtomicLong totalSent = new AtomicLong(0);
-        try (Stream<String> nameStream = getDataStream(); KafkaProducer<K, V> producer =
-                ProducerFactory.make(bootstrap)) {
+        try (Stream<V> nameStream = dataStreamProvider.getDataStream(); KafkaProducer<K, V> producer =
+                KafkaProducerFactory.make(bootstrap)) {
             if (messageCount > 0) {
-                nameStream.limit(messageCount).map(name -> new ProducerRecord<K, V>(topic,
-                        keyGenerator.getKey(), (V) name)).forEach(msg -> {
+                nameStream.limit(messageCount).map(body -> new ProducerRecord<K, V>(topic, keyGenerator.getKey(),
+                        body)).forEach(msg -> {
                     producer.send(msg, new CallbackLogger());
                     totalSent.incrementAndGet();
                 });
             } else {
-                nameStream.map(name -> new ProducerRecord<K, V>(topic, keyGenerator.getKey(), (V) name)).forEach(msg -> {
+                nameStream.map(body -> new ProducerRecord<K, V>(topic, keyGenerator.getKey(), body)).forEach(msg -> {
                     producer.send(msg, new CallbackLogger());
                     totalSent.incrementAndGet();
                 });
@@ -56,17 +54,6 @@ public class Producer<K, V> implements Runnable {
             log.error("Sending to Kafka failed", ex);
         }
         log.info("ending - sent {} messages", totalSent.get());
-    }
-
-    /**
-     * create a Stream of data that can be used for testing with. Package private to support testing.
-     *
-     * @return a non null Stream
-     */
-    Stream<String> getDataStream() {
-        // these two lines could be combined, but I like the reminder of what is going on.
-        Supplier<String> nameSupplier = () -> faker.name().fullName();
-        return Stream.generate(nameSupplier);
     }
 
     /**

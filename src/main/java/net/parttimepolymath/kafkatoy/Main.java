@@ -33,6 +33,7 @@ public class Main {
                             .messageCount(messages(line))
                             .topic(findTopic(line))
                             .keyGenerator(new UUIDKeyGenerator())
+                            .dataStreamProvider(new StringStreamProvider())
                             .bootstrap(findBootstrap(line))
                             .build();
                     instance.run();
