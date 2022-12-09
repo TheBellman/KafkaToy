@@ -23,7 +23,7 @@ public final class KafkaProducerFactory {
         kafkaProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         kafkaProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "io.confluent.kafka.serializers.KafkaAvroSerializer");
 
-//        kafkaProperties.put("schema.registry.url", schemaUrl);
+        kafkaProperties.put("schema.registry.url", "http://localhost:8081");
 
         kafkaProperties.put(ProducerConfig.CLIENT_ID_CONFIG, ApplicationProperties.getProducerId());
         kafkaProperties.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");

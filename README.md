@@ -10,6 +10,8 @@ This project assumes that:
  - Java 12 or later is installed and available;
  - git is installed and available in the command path.
 
+It also pretty well assumes you have a schema registry and Kafka cluster available for use. The easiest way to achieve that is to use the [confluentinc/cp-all-in-one](https://github.com/confluentinc/cp-all-in-one) project with Docker (yes, you will need Docker as well) which can run up an ensemble including Kafka and the Confluent schema registry on your desktop. Use of this project is also discussed at [Confluent](https://docs.confluent.io/platform/current/tutorials/build-your-own-demos.html)
+
 ## Test and Build
 This is simple to build, however you will need Apache Maven and Java installed.
 

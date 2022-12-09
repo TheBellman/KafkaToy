@@ -20,6 +20,15 @@
         <tag>${project.version}</tag>
     </scm>
 
+    <repositories>
+        <!-- needed to find the "standard" SerDes -->
+        <repository>
+            <id>confluent</id>
+            <name>Confluent</name>
+            <url>https://packages.confluent.io/maven/</url>
+        </repository>
+    </repositories>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>12</maven.compiler.source>
@@ -67,6 +76,12 @@
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
             <version>${avro.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-avro-serializer</artifactId>
+            <version>7.3.0</version>
         </dependency>
 
         <dependency>
