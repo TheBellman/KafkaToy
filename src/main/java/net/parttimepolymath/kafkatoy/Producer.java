@@ -6,6 +6,7 @@ import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.jetbrains.annotations.NotNull;
 
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -21,7 +22,6 @@ public class Producer<K, V> implements Runnable {
     private int messageCount;
     private String topic;
     private String bootstrap;
-
     private KeyGenerator<K> keyGenerator;
     private DataStreamProvider<V> dataStreamProvider;
 
@@ -62,7 +62,7 @@ public class Producer<K, V> implements Runnable {
      */
     private static class CallbackLogger implements Callback {
         @Override
-        public void onCompletion(RecordMetadata recordMetadata, Exception e) {
+        public void onCompletion(final @NotNull RecordMetadata recordMetadata, Exception e) {
             if (e != null) {
                 log.error("Sending message failed", e);
             }

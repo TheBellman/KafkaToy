@@ -2,6 +2,7 @@ package net.parttimepolymath.kafkatoy;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * shutdown hook that is used to close the producer that is provided.
@@ -16,7 +17,7 @@ public class ProducerShutdownHook<K, V> extends Thread {
      * @param clientId the id of the producer, used for reporting
      * @param producer the producer that will bue shutdown.
      */
-    public ProducerShutdownHook(final String clientId, final KafkaProducer<K, V> producer) {
+    public ProducerShutdownHook(final @NotNull String clientId, final @NotNull KafkaProducer<K, V> producer) {
         this.service = producer;
         this.id = clientId;
     }
