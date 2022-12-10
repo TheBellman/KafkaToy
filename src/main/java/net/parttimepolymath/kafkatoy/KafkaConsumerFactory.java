@@ -4,6 +4,7 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Properties;
@@ -11,9 +12,11 @@ import java.util.Properties;
  * put all the pieces for making the KafkaConsumer in one place for convenience.
  * Note that this also looks after setting a shutdown hook to try to close the
  * generated consumer.
+ *
+ * Note this also tries to subscribe to the topic.
  */
 public class KafkaConsumerFactory {
-    static <K, V> KafkaConsumer<K, V> make(final String topic, final String bootstrap) {
+    static <K, V> KafkaConsumer<K, V> make(final @NotNull String topic, final @NotNull String bootstrap) {
         Properties kafkaProperties = new Properties();
         kafkaProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
         kafkaProperties.put(ConsumerConfig.GROUP_ID_CONFIG, ApplicationProperties.getGroupId());
@@ -33,7 +36,7 @@ public class KafkaConsumerFactory {
      * @param groupId the group id of the consumer, used for reporting.
      * @param consumer the consumer to close down.
      */
-    private static <K, V> void addShutdown(final String groupId, final KafkaConsumer<K, V> consumer) {
+    private static <K, V> void addShutdown(final @NotNull String groupId, final @NotNull KafkaConsumer<K, V> consumer) {
         Runtime.getRuntime().addShutdownHook(new ConsumerShutdownHook<>(groupId, consumer, Thread.currentThread()));
     }
 }

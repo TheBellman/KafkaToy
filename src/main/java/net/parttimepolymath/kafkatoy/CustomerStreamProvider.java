@@ -7,6 +7,9 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+/**
+ * instance of the stream provider that provides a nonstop stream of dummy customers.
+ */
 public class CustomerStreamProvider implements DataStreamProvider<Customer> {
     private static final Faker faker = new Faker();
 

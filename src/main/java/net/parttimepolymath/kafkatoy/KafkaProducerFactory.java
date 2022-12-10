@@ -4,6 +4,7 @@ import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Properties;
 
@@ -19,7 +20,7 @@ public final class KafkaProducerFactory {
      *
      * @return a non null KafkaProducer
      */
-    static <K, V> KafkaProducer<K, V> make(final String bootstrap) {
+    static <K, V> KafkaProducer<K, V> make(final @NotNull String bootstrap) {
         Properties kafkaProperties = new Properties();
         kafkaProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
         kafkaProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getTypeName());
@@ -38,7 +39,7 @@ public final class KafkaProducerFactory {
      * @param clientId the id of the producer, used for reporting.
      * @param producer the producer to close down.
      */
-    private static <K, V> void addShutdown(final String clientId, final KafkaProducer<K, V> producer) {
+    private static <K, V> void addShutdown(final @NotNull String clientId, final @NotNull KafkaProducer<K, V> producer) {
         Runtime.getRuntime().addShutdownHook(new ProducerShutdownHook<>(clientId, producer));
     }
 }

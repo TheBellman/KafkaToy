@@ -2,6 +2,7 @@ package net.parttimepolymath.kafkatoy;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +28,7 @@ public final class ResourceUtils {
      * @param fileName the name of the file to load.
      * @return a non-null set of properties. This may be empty if the file cannot be loaded.
      */
-    public static Properties loadProperties(final String fileName) {
+    public static @NotNull Properties loadProperties(final @NotNull String fileName) {
         Properties prop = new Properties();
 
         getResourceAsStream(fileName).ifPresent(inStream -> {
@@ -46,7 +47,7 @@ public final class ResourceUtils {
      * @param fileName the name of the file to load
      * @return a non-null but possibly empty list of strings
      */
-    public static List<String> readResourceFileAsList(final String fileName) {
+    public static List<String> readResourceFileAsList(final @NotNull String fileName) {
         return getResourceAsStream(fileName).map(inputStream -> new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.toList())).orElse(Collections.emptyList());
     }
 
@@ -57,11 +58,7 @@ public final class ResourceUtils {
      *                 already.
      * @return a non-null Optional
      */
-    public static Optional<InputStream> getResourceAsStream(final String fileName) {
-        if (fileName == null) {
-            return Optional.empty();
-        }
-
+    public static Optional<InputStream> getResourceAsStream(final @NotNull String fileName) {
         return Optional.ofNullable(ResourceUtils.class.getResourceAsStream(StringUtils.prependIfMissing(fileName,
                 "/")));
     }

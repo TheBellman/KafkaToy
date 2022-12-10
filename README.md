@@ -12,6 +12,16 @@ This project assumes that:
 
 It also pretty well assumes you have a schema registry and Kafka cluster available for use. The easiest way to achieve that is to use the [confluentinc/cp-all-in-one](https://github.com/confluentinc/cp-all-in-one) project with Docker (yes, you will need Docker as well) which can run up an ensemble including Kafka and the Confluent schema registry on your desktop. Use of this project is also discussed at [Confluent](https://docs.confluent.io/platform/current/tutorials/build-your-own-demos.html)
 
+Finally, this assumes that you have a topic in your target cluster called `names` - you can create it with somethng akin to this:
+
+```shell
+./kafka-topics.sh --bootstrap-server localhost:9092 \
+    --create \
+    --replication-factor 1 \
+    --partitions 1 \ 
+    --topic names
+```
+
 ## Test and Build
 This is simple to build, however you will need Apache Maven and Java installed.
 
@@ -100,6 +110,13 @@ KafkaToy (1.0-SNAPSHOT)
 ^C
 2022-11-28 15:18:54 INFO  [Thread-0] net.parttimepolymath.kafkatoy.ConsumerShutdownHook: Shutting down consumer for group KafkaToy-Consumer
 ```
+
+## ToDo
+Next steps for enhancement are:
+
+- provide the target topic on the command line, optionally
+- provide the Schema Registry URL on the command line, optionally
+- add an example of using `AdminClient` to try to create a topic if it doesn't already exist
 
 ## License
 

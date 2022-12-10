@@ -19,7 +19,7 @@ public class Main {
     public static final String OPT_HELP = "?";
     public static final String OPT_CONSUMER = "c";
 
-    public static void main(String[] args) {
+    public static void main(final @NotNull String[] args) {
         System.out.printf("%s (%s)%n", ApplicationProperties.getAppName(), ApplicationProperties.getAppVersion());
 
         Options options = options();
@@ -108,9 +108,9 @@ public class Main {
         options.addOption(Option.builder(OPT_CONSUMER).longOpt("consumer").desc("run as a data consumer").build());
         options.addOption(Option.builder(OPT_TOPIC).longOpt("topic").desc("topic name used").build());
         options.addOption(Option.builder(OPT_COUNT).longOpt("count").desc("number of messages to produce").hasArg().argName("count").build());
-        options.addOption(Option.builder(OPT_BOOTSTRAP).longOpt("bootstrap-server").desc("initial server to connect to (e.g. " + "localhost:9092)").hasArg().argName("broker").build());
+        options.addOption(Option.builder(OPT_BOOTSTRAP).longOpt("bootstrap-server").desc("initial server to connect to (e.g. localhost:9092)").hasArg().argName("broker").build());
         options.addOption((Option.builder(OPT_HELP).longOpt("help").desc("print this help message").build()));
-
+// TODO: schema registry URL is hardcoded in resources file
         return options;
     }
 
@@ -119,7 +119,7 @@ public class Main {
      *
      * @param options a non-null set of CLI options.
      */
-    private static void help(final Options options) {
+    private static void help(final @NotNull Options options) {
         HelpFormatter help = new HelpFormatter();
         help.printHelp(ApplicationProperties.getAppName(), options);
     }
